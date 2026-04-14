@@ -25,6 +25,10 @@ def main():
     parser.add_argument("--interval", type=int, default=INTERVAL)
     args = parser.parse_args()
 
+    last_values = {}
+    last_errors = {}
+    last_timeouts = set()
+
     print(f"Starting PCI keepalive for: {args.bdfs}")
 
     while True:
@@ -32,18 +36,24 @@ def main():
             res = pci_read(bdf)
 
             if res is None:
-                print(f"[TIMEOUT] {bdf}")
+                if bdf not in last_timeouts:
+                    print(f"[TIMEOUT] {bdf}")
+                    last_timeouts.add(bdf)
                 continue
+            else:
+                last_timeouts.discard(bdf)
 
             if res.returncode == 0:
-                output = res.stdout.decode().strip()
+                output = res.stdout.decode(errors="replace")rstrip()
                 # Only log if changed
                 if last_values.get(bdf) != output:
                     print(f"[OK] {bdf}: {output}")
                     last_values[bdf] = output
             else:
-                error = res.stderr.decode().strip()
-                print(f"[FAIL] {bdf}: {error}")
+                error = res.stderr.decode(errors="replace").strip()
+                if last_errors.get(bdf) != error:
+                    print(f"[FAIL] {bdf}: {error}")
+                    last_errors[bdf] = error
 
         time.sleep(args.interval)
 
