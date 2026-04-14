@@ -37,7 +37,10 @@ def main():
 
             if res.returncode == 0:
                 output = res.stdout.decode().strip()
-                print(f"[OK] {bdf}: {output}")
+                # Only log if changed
+                if last_values.get(bdf) != output:
+                    print(f"[OK] {bdf}: {output}")
+                    last_values[bdf] = output
             else:
                 error = res.stderr.decode().strip()
                 print(f"[FAIL] {bdf}: {error}")
