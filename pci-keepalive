@@ -9,9 +9,9 @@
 
 DAEMON="$(command -v python3 2>/dev/null || command -v python)"
 ARGS="01:00.0"
-SCRIPT="/sbin/pci_keepalive.py"
-LOG="/var/log/pci_keepalive.log"
-PIDFILE="/var/run/pci_keepalive.pid"
+SCRIPT="/sbin/pci-keepalive.py"
+LOG="/var/log/pci-keepalive.log"
+PIDFILE="/var/run/pci-keepalive.pid"
 
 start() {
     echo "Starting PCI keepalive..."
