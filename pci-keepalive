@@ -17,8 +17,9 @@ start() {
     echo "Starting PCI keepalive..."
     start-stop-daemon --start --background --make-pidfile \
         --pidfile $PIDFILE \
-        --exec $DAEMON -- $SCRIPT $ARGS \
-        --output $LOG
+        --exec $DAEMON \
+        --output $LOG \
+        --startas $DAEMON -- -u $SCRIPT $ARGS
 }
 
 stop() {
