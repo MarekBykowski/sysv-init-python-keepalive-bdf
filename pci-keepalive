@@ -1,0 +1,42 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          pci-keepalive
+# Required-Start:    $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: PCI keepalive for SV devices
+### END INIT INFO
+
+DAEMON="$(command -v python3 2>/dev/null || command -v python)"
+ARGS="01:00.0"
+SCRIPT="/sbin/pci_keepalive.py"
+LOG="/var/log/pci_keepalive.log"
+PIDFILE="/var/run/pci_keepalive.pid"
+
+start() {
+    echo "Starting PCI keepalive..."
+    start-stop-daemon --start --background --make-pidfile \
+        --pidfile $PIDFILE \
+        --exec $DAEMON -- $SCRIPT $ARGS \
+        --output $LOG
+}
+
+stop() {
+    echo "Stopping PCI keepalive..."
+    start-stop-daemon --stop --pidfile $PIDFILE
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+case "$1" in
+    start) start ;;
+    stop) stop ;;
+    restart) restart ;;
+    *) echo "Usage: /etc/init.d/pci-keepalive {start|stop|restart}" ;;
+esac
+
+exit 0
