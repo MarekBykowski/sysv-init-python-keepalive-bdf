@@ -44,7 +44,7 @@ def main():
                 last_timeouts.discard(bdf)
 
             if res.returncode == 0:
-                output = res.stdout.decode(errors="replace")rstrip()
+                output = res.stdout.decode(errors="replace").strip()
                 # Only log if changed
                 if last_values.get(bdf) != output:
                     print(f"[OK] {bdf}: {output}")
