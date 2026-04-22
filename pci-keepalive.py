@@ -5,7 +5,7 @@ import sys
 import argparse
 
 INTERVAL = 5
-TIMEOUT = 15
+TIMEOUT = 30
 
 def pci_read(bdf):
     try:
